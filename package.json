@@ -1,0 +1,31 @@
+{
+  "name": "kysely-snowflake",
+  "version": "0.1.0",
+  "description": "Snowflake dialect for Kysely",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
+    "test": "vitest"
+  },
+  "keywords": [
+    "kysely",
+    "snowflake"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "kysely": "*",
+    "snowflake-sdk": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "kysely": "^0.28.0",
+    "snowflake-sdk": "^2.4.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
+  }
+}
