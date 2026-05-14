@@ -1,25 +1,11 @@
 import { type CompiledQuery, type DatabaseConnection, type QueryResult } from 'kysely'
 import snowflake, { type Connection, type RowStatement } from 'snowflake-sdk'
-import { type SnowflakeDialectConfig } from './SnowflakeDialect.js'
 
 export class SnowflakeConnection implements DatabaseConnection {
   readonly #conn: Connection
 
-  constructor(config: SnowflakeDialectConfig) {
-    this.#conn = snowflake.createConnection(config.connection)
-  }
-
-  async connect(): Promise<void> {
-    await this.#conn.connectAsync()
-  }
-
-  async disconnect(): Promise<void> {
-    await new Promise<void>((resolve, reject) => {
-      this.#conn.destroy((err) => {
-        if (err) reject(err)
-        else resolve()
-      })
-    })
+  constructor(conn: Connection) {
+    this.#conn = conn
   }
 
   async #executeRaw(sqlText: string): Promise<void> {
@@ -46,7 +32,6 @@ export class SnowflakeConnection implements DatabaseConnection {
     await this.#executeRaw('ROLLBACK')
   }
 
-  // PostgresQueryCompiler emits $1, $2, ... — translate to ? for snowflake-sdk positional binds.
   #translatePlaceholders(sql: string): string {
     return sql.replace(/\$\d+/g, '?')
   }
@@ -62,11 +47,16 @@ export class SnowflakeConnection implements DatabaseConnection {
         complete(err, stmt, rows) {
           if (err) return reject(err)
 
-          if (compiledQuery.query.kind === 'SelectQueryNode') {
-            resolve({ rows: (rows ?? []) as O[] })
+          const numUpdated = (stmt as RowStatement).getNumUpdatedRows()
+          if (numUpdated != null && numUpdated >= 0) {
+            const n = BigInt(numUpdated)
+            resolve({
+              rows: (rows ?? []) as O[],
+              numAffectedRows: n,
+              numChangedRows: n,
+            })
           } else {
-            const n = BigInt((stmt as RowStatement).getNumUpdatedRows() ?? 0)
-            resolve({ rows: [], numAffectedRows: n, numChangedRows: n })
+            resolve({ rows: (rows ?? []) as O[] })
           }
         },
       })

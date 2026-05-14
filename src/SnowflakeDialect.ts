@@ -6,13 +6,14 @@ import {
   PostgresQueryCompiler,
   type QueryCompiler,
 } from 'kysely'
-import type { ConnectionOptions } from 'snowflake-sdk'
+import type { ConnectionOptions, PoolOptions } from 'snowflake-sdk'
 import { SnowflakeAdapter } from './SnowflakeAdapter.js'
 import { SnowflakeDriver } from './SnowflakeDriver.js'
 import { SnowflakeIntrospector } from './SnowflakeIntrospector.js'
 
 export interface SnowflakeDialectConfig {
   connection: ConnectionOptions
+  poolOptions?: PoolOptions
 }
 
 export class SnowflakeDialect implements Dialect {
