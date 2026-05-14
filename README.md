@@ -1,18 +1,20 @@
-# kysely-snowflake
+# snowflake-kysely-dialect
 
 A [Kysely](https://kysely.dev) dialect for [Snowflake](https://www.snowflake.com).
 
 ## Installation
 
 ```bash
-npm install kysely-snowflake kysely snowflake-sdk
+npm install snowflake-kysely-dialect kysely snowflake-sdk
+# or
+yarn add snowflake-kysely-dialect kysely snowflake-sdk
 ```
 
 ## Usage
 
 ```ts
 import { Kysely } from 'kysely'
-import { SnowflakeDialect } from 'kysely-snowflake'
+import { SnowflakeDialect } from 'snowflake-kysely-dialect'
 
 interface Database {
   users: {
@@ -78,7 +80,7 @@ const tables = await db.introspection.getTables()
 ## Notes
 
 - Uses `PostgresQueryCompiler` under the hood — Snowflake's SQL dialect (double-quoted identifiers, window functions, standard string functions) is closer to Postgres than MySQL.
-- No connection pooling in v1. A single connection is held for the lifetime of the `Kysely` instance.
+- Uses a connection pool backed by `snowflake-sdk`'s built-in pool. Pool size and timeouts are configurable via the `poolOptions` config key.
 - `RETURNING` is not supported by Snowflake and is disabled in the adapter.
 - Snowflake folds unquoted identifiers to uppercase. Use quoted identifiers (via `sql.id(...)`) when you need case-sensitive names.
 - `VARIANT` / `OBJECT` columns (JSON), `TIMESTAMP_NTZ` / `TIMESTAMP_LTZ` / `TIMESTAMP_TZ`, and `NUMBER` precision are the most common sources of type round-tripping surprises — test these explicitly in your application.
