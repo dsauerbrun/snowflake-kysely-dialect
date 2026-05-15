@@ -16,6 +16,10 @@
     "kysely",
     "snowflake"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dsauerbrun/snowflake-kysely-dialect"
+  },
   "license": "MIT",
   "peerDependencies": {
     "kysely": "*",
