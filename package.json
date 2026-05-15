@@ -1,6 +1,6 @@
 {
   "name": "snowflake-kysely-dialect",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Snowflake dialect for Kysely",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
